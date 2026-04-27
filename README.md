@@ -146,7 +146,7 @@ https://httpbin.org/status/404  => 404 Not Found
 https://httpbin.org/status/500  => 500 Internal Server Error
 https://httpbin.org/redirect/3  => 302 Found 98.XX.87.4:443
 
-Exercice
+## Exercice
 httpbin.org/get	
   Méthode	: GET
   Code : 200 OK
@@ -162,7 +162,7 @@ httpbin.org/status/201
   Code : 201 Created
   Content-Type	: text/html; charset=utf-8
 
-**Exercices**
+## TP2
 
 2.1 Requête GET simple
 ```bash
@@ -330,3 +330,41 @@ Access-Control-Allow-Credentials: true
   "url": "https://httpbin.org/post"
 }
 ```
+## TP 3 : API REST avec JavaScript
+
+```javascript
+async function fetchWithRetry(url, options = {}, maxRetries = 3) {
+  let lastError;
+
+  for (let attempt = 1; attempt <= maxRetries + 1; attempt++) {
+    try {
+      const response = await fetch(url, options);
+
+      // Si le statut est 5xx, on lance une erreur pour déclencher le retry
+      if (response.status >= 500 && response.status < 600) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      // Succès : on retourne la réponse
+      return response;
+
+    } catch (error) {
+      lastError = error;
+
+      // Si on a atteint le nombre max de tentatives, on arrête
+      if (attempt > maxRetries) {
+        console.error(`Échec après ${maxRetries} tentatives :`, error.message);
+        break;
+      }
+
+      // Attendre 1 seconde avant la prochaine tentative
+      console.log(`Tentative ${attempt} échouée, réessai dans 1s...`);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  }
+
+  // Si on sort de la boucle sans retour, on rejette la promesse
+  throw lastError;
+}
+```
+
