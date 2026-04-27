@@ -332,6 +332,13 @@ Access-Control-Allow-Credentials: true
 ```
 ## TP 3 : API REST avec JavaScript
 
+Créez une fonction fetchWithRetry(url, options, maxRetries) qui :
+
+Effectue une requête HTTP
+En cas d'erreur 5xx, réessaie jusqu'à maxRetries fois
+Attend 1 seconde entre chaque tentative
+Retourne la réponse ou lève une erreur
+
 ```javascript
 async function fetchWithRetry(url, options = {}, maxRetries = 3) {
   let lastError;
@@ -368,3 +375,43 @@ async function fetchWithRetry(url, options = {}, maxRetries = 3) {
 }
 ```
 
+## TP 4 : Analyse des Headers de Sécurité
+
+resultat de test des commandes:
+ ```bash
+C:\Users\safab>curl -I https://google.com
+HTTP/1.1 301 Moved Permanently
+Location: https://www.google.com/
+Content-Type: text/html; charset=UTF-8
+Content-Security-Policy-Report-Only: object-src 'none';base-uri 'self';script-src 'nonce-2yEYYwDPCTycY4WOLT7w5Q' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other-hp
+Date: Mon, 27 Apr 2026 15:01:10 GMT
+Expires: Wed, 27 May 2026 15:01:10 GMT
+Cache-Control: public, max-age=2592000
+Server: gws
+Content-Length: 220
+X-XSS-Protection: 0
+X-Frame-Options: SAMEORIGIN
+Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+```
+**4.2 Analyser avec Security Headers**
+
+Allez sur https://securityheaders.com
+Entrez l'URL d'un site (ex: github.com)
+Analysez le rapport
+Headers:	
+  checke:
+    Strict-Transport-Security 
+    X-Frame-Options 
+    X-Content-Type-Options 
+    Referrer-Policy
+    Content-Security-Policy 
+  Non checke:
+    Permissions-Policy
+
+**Exercice**
+
+| Site | HSTS | X-Frame | X-Content-Type | CSP | Note |
+|------|------|---------|---------------|-----|------|
+| `github.com` | ✅ `max-age=31536000; includeSubdomains; preload` | ✅ `deny` | ✅ `nosniff` | ✅ `default-src 'none'` (stricte) | **A** 🟢 |
+| `google.com` | ✅ `max-age=31536000` | ✅ `SAMEORIGIN` | ❌ *Missing* | ⚠️ `report-only` (non appliquée) | **C** 🟡 |
+| `mozilla.org` | ✅ `max-age=31536000; includeSubDomains; preload` | ✅ `SAMEORIGIN` | ✅ `nosniff` | ✅ `default-src 'self'` | **A+** 🟢 |
