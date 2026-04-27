@@ -68,7 +68,7 @@ Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
 }
 ```
 
-#### 1.3 Tester différentes méthodes
+**1.3 Tester différentes méthodes**
 
 ```javascript
 // GET
@@ -139,7 +139,7 @@ url
 : 
 Object
 ```
-1.4 Observer les codes de statut
+**1.4 Observer les codes de statut**
 Testons ces URLs et notez les codes :
 https://httpbin.org/status/200  => 200 OK
 https://httpbin.org/status/404  => 404 Not Found 
@@ -164,7 +164,7 @@ httpbin.org/status/201
 
 ## TP2
 
-2.1 Requête GET simple
+**2.1 Requête GET simple**
 ```bash
 C:\Users\safab>curl --version
 curl 8.18.0 (Windows) libcurl/8.18.0 Schannel zlib/1.3.1 WinIDN WinLDAP
@@ -249,7 +249,8 @@ Question : Quelle est la différence entre -i et -v ?
 • -i (--include) : Affiche uniquement les headers de la réponse HTTP suivis du corps de la réponse. Cette option est pratique pour vérifier rapidement le code statut (200, 404, etc.) et les métadonnées renvoyées par le serveur.
 • -v (--verbose) : Active le mode verbeux (debug). Il affiche l'intégralité du processus : la connexion réseau (DNS, TCP, TLS), les headers de la requête envoyée par votre machine, les headers de réponse reçus, ainsi que le corps. Il est utilisé pour diagnostiquer des problèmes de connexion, de certificats ou de configuration.
 
-2.4 Suivre les redirections
+**2.4 Suivre les redirections**
+
 ```bash
 C:\Users\safab>curl https://httpbin.org/redirect/3
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
@@ -272,7 +273,8 @@ C:\Users\safab>curl -L https://httpbin.org/redirect/3
 C:\Users\safab>
 ```
 
-2.5 Télécharger un fichier
+**2.5 Télécharger un fichier**
+
 ```bash
 C:\Users\safab>curl -o image.png https://httpbin.org/image/png
   % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
@@ -295,7 +297,7 @@ Avec le header X-Custom-Header: MonHeader
 Avec le body {"action": "test", "value": 42}
 Affiche les headers de réponse
 
-reponce:
+réponce:
 
 ```bash
 C:\Users\safab>curl -i -X POST -H "Content-Type: application/json" -H "X-Custom-Header: MonHeader" -d "{\"action\": \"test\", \"value\": 42}" https://httpbin.org/post
@@ -418,7 +420,8 @@ Headers:
 
 ## TP 5 : Cache HTTP
 
-5.1 Observer le cache
+**5.1 Observer le cache**
+
 ```bash
 C:\Users\safab>curl -i https://httpbin.org/cache/60
 HTTP/1.1 200 OK
@@ -445,7 +448,7 @@ Access-Control-Allow-Credentials: true
 
 C:\Users\safab>
 ```
-5.2 Requête conditionnelle
+**5.2 Requête conditionnelle**
 
 ```bash
 C:\Users\safab>curl -i https://httpbin.org/etag/test123
@@ -481,8 +484,216 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Credentials: true
 ```
 
-5.3 Simulation de cache dans le navigateur
-Ouvrez DevTools > Network
-Chargez une page avec des images
-Rechargez (F5) et observez "(from cache)"
-Rechargez avec Ctrl+Shift+R (ignorer le cache)
+**5.3 Simulation de cache dans le navigateur**
+
+Créez une page HTML avec :
+Une image
+Un fichier CSS
+Un fichier JS
+
+réponce:
+
+index.html:
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>TP Cache HTTP</title>
+  
+  <!-- CSS : Cache long terme (fichiers versionnés) -->
+  <link rel="stylesheet" href="style.v1.css">
+  
+  <!-- JS : Cache avec revalidation -->
+  <script src="app.v1.js" defer></script>
+</head>
+<body>
+  <h1>Test de Cache HTTP</h1>
+  
+  <!-- Image : Cache agressif (contenu statique) -->
+  <img src="logo.png" alt="Logo" width="200">
+  
+  <p>Ouvrez DevTools > Network pour observer les headers de cache.</p>
+</body>
+</html>
+```
+app.v1.js:
+```javascript
+const express = require('express');
+const path = require('path');
+const app = express();
+
+// HTML : Ne pas mettre en cache (contenu dynamique)
+app.get('*.html', (req, res, next) => {
+  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
+
+// CSS/JS versionnés : Cache long terme (1 an)
+app.use('/style.v1.css', express.static('public', {
+  maxAge: '365d',
+  immutable: true
+}));
+app.use('/app.v1.js', express.static('public', {
+  maxAge: '365d',
+  immutable: true
+}));
+
+// Images : Cache moyen terme
+app.use('*.png', express.static('public', {
+  maxAge: '30d',
+  setHeaders: (res) => {
+    res.set('Cache-Control', 'public, max-age=2592000');
+  }
+}));
+
+app.listen(3000, () => console.log('Serveur sur http://localhost:3000'));
+```
+
+## Exercice 1 : Client HTTP minimaliste
+Créez un script JavaScript qui :
+Affiche un formulaire avec URL, méthode, body
+Envoie la requête
+Affiche le statut, headers et corps de la réponse
+
+```javascript
+(function() {
+  // Création du conteneur principal
+  var container = document.createElement('div');
+  container.id = 'http-client';
+
+  // Création du formulaire
+  var form = document.createElement('form');
+  form.id = 'http-form';
+
+  // Champ URL
+  var urlLabel = document.createElement('label');
+  urlLabel.textContent = 'URL: ';
+  var urlInput = document.createElement('input');
+  urlInput.type = 'url';
+  urlInput.id = 'url';
+  urlInput.value = 'https://httpbin.org/get';
+  urlInput.required = true;
+  urlLabel.appendChild(urlInput);
+
+  // Champ Méthode
+  var methodLabel = document.createElement('label');
+  methodLabel.textContent = 'Method: ';
+  var methodSelect = document.createElement('select');
+  methodSelect.id = 'method';
+  ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD'].forEach(function(m) {
+    var opt = document.createElement('option');
+    opt.value = m;
+    opt.textContent = m;
+    if (m === 'GET') opt.selected = true;
+    methodSelect.appendChild(opt);
+  });
+  methodLabel.appendChild(methodSelect);
+
+  // Champ Body
+  var bodyLabel = document.createElement('label');
+  bodyLabel.textContent = 'Body (JSON): ';
+  var bodyInput = document.createElement('textarea');
+  bodyInput.id = 'body';
+  bodyInput.rows = 5;
+  bodyInput.cols = 50;
+  bodyInput.placeholder = '{"key": "value"}';
+  bodyLabel.appendChild(bodyInput);
+
+  // Bouton d'envoi
+  var submitBtn = document.createElement('button');
+  submitBtn.type = 'submit';
+  submitBtn.textContent = 'Envoyer la requete';
+
+  // Zone d'affichage des résultats
+  var output = document.createElement('pre');
+  output.id = 'output';
+  output.textContent = 'Les resultats apparaitront ici.';
+
+  // Assemblage du formulaire
+  form.appendChild(document.createElement('br'));
+  form.appendChild(urlLabel);
+  form.appendChild(document.createElement('br'));
+  form.appendChild(document.createElement('br'));
+  form.appendChild(methodLabel);
+  form.appendChild(document.createElement('br'));
+  form.appendChild(document.createElement('br'));
+  form.appendChild(bodyLabel);
+  form.appendChild(document.createElement('br'));
+  form.appendChild(document.createElement('br'));
+  form.appendChild(submitBtn);
+  form.appendChild(document.createElement('br'));
+  form.appendChild(document.createElement('br'));
+  form.appendChild(output);
+
+  // Insertion dans la page
+  container.appendChild(form);
+  document.body.appendChild(container);
+
+  // Gestion de l'envoi
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    output.textContent = 'Envoi en cours...';
+
+    var url = urlInput.value.trim();
+    var method = methodSelect.value;
+    var bodyRaw = bodyInput.value.trim();
+
+    var options = { method: method };
+    if (bodyRaw && method !== 'GET' && method !== 'HEAD') {
+      options.headers = { 'Content-Type': 'application/json' };
+      options.body = bodyRaw;
+    }
+
+    try {
+      var startTime = performance.now();
+      var response = await fetch(url, options);
+      var duration = ((performance.now() - startTime) / 1000).toFixed(2);
+
+      var responseText = await response.text();
+      var responseBody;
+      try {
+        responseBody = JSON.parse(responseText);
+        responseBody = JSON.stringify(responseBody, null, 2);
+      } catch {
+        responseBody = responseText;
+      }
+
+      var headersList = '';
+      response.headers.forEach(function(value, key) {
+        headersList += key + ': ' + value + '\n';
+      });
+
+      output.textContent =
+        'Statut: ' + response.status + ' ' + response.statusText + ' (' + duration + 's)\n\n' +
+        'Headers:\n' + headersList + '\n' +
+        'Body:\n' + responseBody;
+
+    } catch (error) {
+      output.textContent = 'Erreur: ' + error.message + '\nVerifiez l URL, la methode ou la politique CORS du serveur.';
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+})();
+```
+
+## Exercice 2 : Questions théoriques
+
+Quelle est la différence entre no-cache et no-store ?
+no-cache autorise le stockage mais impose une revalidation obligatoire avec le serveur avant utilisation. no-store interdit tout stockage : la ressource est systématiquement retéléchargée à chaque requête.
+
+Pourquoi POST n'est-il pas idempotent ?
+Parce que l'envoi répété de la même requête POST crée généralement plusieurs ressources distinctes ou produit des effets de bord différents (ex: double commande), contrairement aux méthodes idempotentes qui garantissent le même état final.
+
+Que se passe-t-il si le serveur renvoie un code 301 ?
+Le serveur signale un déplacement définitif de la ressource. Le navigateur suit automatiquement la nouvelle URL fournie dans l'en-tête Location et conserve généralement cette redirection en cache pour les futures requêtes.
+
+À quoi sert le header Origin ?
+Il indique au serveur le protocole, le domaine et le port de la page qui lance la requête. Il est principalement utilisé par les navigateurs pour les vérifications de sécurité CORS et bloquer les requêtes cross-site non autorisées.
+
+Pourquoi utiliser HttpOnly sur les cookies de session ?
+Il empêche l'accès au cookie via JavaScript (document.cookie), ce qui protège la session contre les vols de données en cas de faille XSS (injection de scripts malveillants).
