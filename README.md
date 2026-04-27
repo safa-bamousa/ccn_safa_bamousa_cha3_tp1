@@ -145,3 +145,19 @@ https://httpbin.org/status/200  => 200 OK
 https://httpbin.org/status/404  => 404 Not Found 
 https://httpbin.org/status/500  => 500 Internal Server Error
 https://httpbin.org/redirect/3  => 302 Found 98.XX.87.4:443
+
+Exercice
+httpbin.org/get	
+  Méthode	: GET
+  Code : 200 OK
+  Content-Type	: application/json
+  
+httpbin.org/post			
+  Méthode	:POST
+  Code : 405 Method Not Allowed
+  Content-Type	:	text/html
+  
+httpbin.org/status/201	
+  Méthode	: GET
+  Code : 201 Created
+  Content-Type	: text/html; charset=utf-8
