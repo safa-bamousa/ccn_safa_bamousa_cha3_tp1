@@ -67,14 +67,33 @@ Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
 
 
 #### 1.3 Tester différentes méthodes
-Utilisez l'onglet **Console** pour envoyer des requêtes :
 
 ```javascript
 // GET
 fetch('https://httpbin.org/get')
   .then(r => r.json())
   .then(console.log);
-
+```
+result: 
+```
+Promise {<pending>}
+{args: {…}, headers: {…}, origin: '196.70.252.213', url: 'https://httpbin.org/get'}
+args
+: 
+{}
+headers
+: 
+{Accept: '*/*', Accept-Encoding: 'gzip, deflate, br, zstd', Accept-Language: 'en-GB,en-US;q=0.9,en;q=0.8', Host: 'httpbin.org', Priority: 'u=1, i', …}
+origin
+: 
+"196.70.252.213"
+url
+: 
+"https://httpbin.org/get"
+[[Prototype]]
+: 
+Object
+```
 // POST
 fetch('https://httpbin.org/post', {
   method: 'POST',
