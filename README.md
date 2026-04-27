@@ -139,3 +139,9 @@ url
 : 
 Object
 ```
+1.4 Observer les codes de statut
+Testons ces URLs et notez les codes :
+https://httpbin.org/status/200  => 200 OK
+https://httpbin.org/status/404  => 404 Not Found 
+https://httpbin.org/status/500  => 500 Internal Server Error
+https://httpbin.org/redirect/3  => 302 Found 98.XX.87.4:443
