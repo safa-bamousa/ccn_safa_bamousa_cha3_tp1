@@ -415,3 +415,74 @@ Headers:
 | `github.com` | ✅ `max-age=31536000; includeSubdomains; preload` | ✅ `deny` | ✅ `nosniff` | ✅ `default-src 'none'` (stricte) | **A** 🟢 |
 | `google.com` | ✅ `max-age=31536000` | ✅ `SAMEORIGIN` | ❌ *Missing* | ⚠️ `report-only` (non appliquée) | **C** 🟡 |
 | `mozilla.org` | ✅ `max-age=31536000; includeSubDomains; preload` | ✅ `SAMEORIGIN` | ✅ `nosniff` | ✅ `default-src 'self'` | **A+** 🟢 |
+
+## TP 5 : Cache HTTP
+
+5.1 Observer le cache
+```bash
+C:\Users\safab>curl -i https://httpbin.org/cache/60
+HTTP/1.1 200 OK
+Date: Mon, 27 Apr 2026 15:19:40 GMT
+Content-Type: application/json
+Content-Length: 261
+Connection: keep-alive
+Server: gunicorn/19.9.0
+Cache-Control: public, max-age=60
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+
+{
+  "args": {},
+  "headers": {
+    "Accept": "*/*",
+    "Host": "httpbin.org",
+    "User-Agent": "curl/8.18.0",
+    "X-Amzn-Trace-Id": "Root=1-69ef7e8c-08c0c5b86c9e7b7965051f22"
+  },
+  "origin": "196.70.252.213",
+  "url": "https://httpbin.org/cache/60"
+}
+
+C:\Users\safab>
+```
+5.2 Requête conditionnelle
+
+```bash
+C:\Users\safab>curl -i https://httpbin.org/etag/test123
+HTTP/1.1 200 OK
+Date: Mon, 27 Apr 2026 15:21:03 GMT
+Content-Type: application/json
+Content-Length: 265
+Connection: keep-alive
+Server: gunicorn/19.9.0
+ETag: test123
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+
+{
+  "args": {},
+  "headers": {
+    "Accept": "*/*",
+    "Host": "httpbin.org",
+    "User-Agent": "curl/8.18.0",
+    "X-Amzn-Trace-Id": "Root=1-69ef7edf-31ac250e60b8f7a418c64be2"
+  },
+  "origin": "196.70.252.213",
+  "url": "https://httpbin.org/etag/test123"
+}
+
+C:\Users\safab>curl -i -H "If-None-Match: test123" https://httpbin.org/etag/test123
+HTTP/1.1 304 NOT MODIFIED
+Date: Mon, 27 Apr 2026 15:21:15 GMT
+Connection: keep-alive
+Server: gunicorn/19.9.0
+ETag: test123
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+```
+
+5.3 Simulation de cache dans le navigateur
+Ouvrez DevTools > Network
+Chargez une page avec des images
+Rechargez (F5) et observez "(from cache)"
+Rechargez avec Ctrl+Shift+R (ignorer le cache)
