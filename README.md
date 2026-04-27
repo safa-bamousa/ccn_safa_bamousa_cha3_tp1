@@ -246,3 +246,87 @@ C:\Users\safab>curl -v https://httpbin.org/get
 * Connection #0 to host httpbin.org:443 left intact
 ```
 Question : Quelle est la différence entre -i et -v ?
+• -i (--include) : Affiche uniquement les headers de la réponse HTTP suivis du corps de la réponse. Cette option est pratique pour vérifier rapidement le code statut (200, 404, etc.) et les métadonnées renvoyées par le serveur.
+• -v (--verbose) : Active le mode verbeux (debug). Il affiche l'intégralité du processus : la connexion réseau (DNS, TCP, TLS), les headers de la requête envoyée par votre machine, les headers de réponse reçus, ainsi que le corps. Il est utilisé pour diagnostiquer des problèmes de connexion, de certificats ou de configuration.
+
+2.4 Suivre les redirections
+```bash
+C:\Users\safab>curl https://httpbin.org/redirect/3
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<title>Redirecting...</title>
+<h1>Redirecting...</h1>
+<p>You should be redirected automatically to target URL: <a href="/relative-redirect/2">/relative-redirect/2</a>.  If not click the link.
+C:\Users\safab>curl -L https://httpbin.org/redirect/3
+{
+  "args": {},
+  "headers": {
+    "Accept": "*/*",
+    "Host": "httpbin.org",
+    "User-Agent": "curl/8.18.0",
+    "X-Amzn-Trace-Id": "Root=1-69ef7664-7180c39e258835cd0f3494bf"
+  },
+  "origin": "196.70.252.213",
+  "url": "https://httpbin.org/get"
+}
+
+C:\Users\safab>
+```
+
+2.5 Télécharger un fichier
+```bash
+C:\Users\safab>curl -o image.png https://httpbin.org/image/png
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+  0      0   0      0   0      0      0      0                      100   8090 100   8090   0      0   9499      0                      100   8090 100   8090   0      0   8853      0                      100   8090 100   8090   0      0   8320      0                              0
+
+C:\Users\safab>curl -O https://example.com/fichier.pdf
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+  0      0   0      0   0      0      0      0                      100    528   0    528   0      0    649      0                      100    528   0    528   0      0    602      0                      100    528   0    528   0      0    562      0                              0
+
+C:\Users\safab>
+```
+
+Écrivez une commande cURL qui :
+
+Envoie une requête POST à https://httpbin.org/post
+Avec le header Content-Type: application/json
+Avec le header X-Custom-Header: MonHeader
+Avec le body {"action": "test", "value": 42}
+Affiche les headers de réponse
+
+reponce:
+
+```bash
+C:\Users\safab>curl -i -X POST -H "Content-Type: application/json" -H "X-Custom-Header: MonHeader" -d "{\"action\": \"test\", \"value\": 42}" https://httpbin.org/post
+HTTP/1.1 200 OK
+Date: Mon, 27 Apr 2026 14:50:49 GMT
+Content-Type: application/json
+Content-Length: 504
+Connection: keep-alive
+Server: gunicorn/19.9.0
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+
+{
+  "args": {},
+  "data": "{\"action\": \"test\", \"value\": 42}",
+  "files": {},
+  "form": {},
+  "headers": {
+    "Accept": "*/*",
+    "Content-Length": "31",
+    "Content-Type": "application/json",
+    "Host": "httpbin.org",
+    "User-Agent": "curl/8.18.0",
+    "X-Amzn-Trace-Id": "Root=1-69ef77c9-2bd34a41747240594809d683",
+    "X-Custom-Header": "MonHeader"
+  },
+  "json": {
+    "action": "test",
+    "value": 42
+  },
+  "origin": "196.70.252.213",
+  "url": "https://httpbin.org/post"
+}
+```
