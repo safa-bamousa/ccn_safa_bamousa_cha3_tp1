@@ -75,7 +75,7 @@ fetch('https://httpbin.org/get')
   .then(console.log);
 ```
 result: 
-```
+```CSS
 Promise {<pending>}
 {args: {…}, headers: {…}, origin: '196.70.252.213', url: 'https://httpbin.org/get'}
 args
