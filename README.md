@@ -6,6 +6,7 @@
 200 OK (La requête a été traitée avec succès)
 
 - Quels headers de requête sont envoyés ?
+```javascript
 :authority
 httpbin.org
 :method
@@ -40,8 +41,9 @@ upgrade-insecure-requests
 1
 user-agent
 Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
-
+```
 - Quel est le Content-Type de la réponse ?
+```javascript
 {
   "args": {}, 
   "headers": {
@@ -64,7 +66,7 @@ Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
   "origin": "196.70.252.213", 
   "url": "https://httpbin.org/get"
 }
-
+```
 
 #### 1.3 Tester différentes méthodes
 
@@ -75,7 +77,7 @@ fetch('https://httpbin.org/get')
   .then(console.log);
 ```
 result: 
-```CSS
+```javascript
 Promise {<pending>}
 {args: {…}, headers: {…}, origin: '196.70.252.213', url: 'https://httpbin.org/get'}
 args
@@ -94,6 +96,7 @@ url
 : 
 Object
 ```
+```javascript
 // POST
 fetch('https://httpbin.org/post', {
   method: 'POST',
@@ -102,3 +105,37 @@ fetch('https://httpbin.org/post', {
 })
   .then(r => r.json())
   .then(console.log);
+```
+result: 
+```javascript
+
+Promise {<pending>}
+{args: {…}, data: '{"name":"John","age":30}', files: {…}, form: {…}, headers: {…}, …}
+args
+: 
+{}
+data
+: 
+"{\"name\":\"John\",\"age\":30}"
+files
+: 
+{}
+form
+: 
+{}
+headers
+: 
+{Accept: '*/*', Accept-Encoding: 'gzip, deflate, br, zstd', Accept-Language: 'en-GB,en-US;q=0.9,en;q=0.8', Content-Length: '24', Content-Type: 'application/json', …}
+json
+: 
+{age: 30, name: 'John'}
+origin
+: 
+"196.70.252.213"
+url
+: 
+"https://httpbin.org/post"
+[[Prototype]]
+: 
+Object
+```
