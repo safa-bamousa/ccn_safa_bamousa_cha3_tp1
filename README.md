@@ -161,3 +161,88 @@ httpbin.org/status/201
   Méthode	: GET
   Code : 201 Created
   Content-Type	: text/html; charset=utf-8
+
+**Exercices**
+
+2.1 Requête GET simple
+```bash
+C:\Users\safab>curl --version
+curl 8.18.0 (Windows) libcurl/8.18.0 Schannel zlib/1.3.1 WinIDN WinLDAP
+Release-Date: 2026-01-07
+Protocols: dict file ftp ftps gopher gophers http https imap imaps ipfs ipns ldap ldaps mqtt pop3 pop3s smb smbs smtp smtps telnet tftp ws wss
+Features: alt-svc AsynchDNS HSTS HTTPS-proxy IDN IPv6 Kerberos Largefile libz NTLM SPNEGO SSL SSPI threadsafe Unicode UnixSockets
+
+C:\Users\safab>curl https://httpbin.org/get
+{
+  "args": {},
+  "headers": {
+    "Accept": "*/*",
+    "Host": "httpbin.org",
+    "User-Agent": "curl/8.18.0",
+    "X-Amzn-Trace-Id": "Root=1-69ef7439-2d9dba966758c3fc12fbbfe4"
+  },
+  "origin": "196.70.252.214",
+  "url": "https://httpbin.org/get"
+}
+
+C:\Users\safab>curl -i https://httpbin.org/get
+HTTP/1.1 200 OK
+Date: Mon, 27 Apr 2026 14:35:44 GMT
+Content-Type: application/json
+Content-Length: 256
+Connection: keep-alive
+Server: gunicorn/19.9.0
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+
+{
+  "args": {},
+  "headers": {
+    "Accept": "*/*",
+    "Host": "httpbin.org",
+    "User-Agent": "curl/8.18.0",
+    "X-Amzn-Trace-Id": "Root=1-69ef7440-3e9c60ea36f3148f2aecbf63"
+  },
+  "origin": "196.70.252.214",
+  "url": "https://httpbin.org/get"
+}
+
+C:\Users\safab>curl -v https://httpbin.org/get
+* Host httpbin.org:443 was resolved.
+* IPv6: (none)
+* IPv4: 54.198.84.224, 3.228.76.52, 3.220.42.21, 3.234.199.80, 98.84.87.4, 100.50.202.131
+*   Trying 54.198.84.224:443...
+* schannel: disabled automatic use of client certificate
+* ALPN: curl offers http/1.1
+* ALPN: server accepted http/1.1
+* Established connection to httpbin.org (54.198.84.224 port 443) from 172.17.1.104 port 53876
+* using HTTP/1.x
+> GET /get HTTP/1.1
+> Host: httpbin.org
+> User-Agent: curl/8.18.0
+> Accept: */*
+>
+* Request completely sent off
+< HTTP/1.1 200 OK
+< Date: Mon, 27 Apr 2026 14:35:51 GMT
+< Content-Type: application/json
+< Content-Length: 256
+< Connection: keep-alive
+< Server: gunicorn/19.9.0
+< Access-Control-Allow-Origin: *
+< Access-Control-Allow-Credentials: true
+<
+{
+  "args": {},
+  "headers": {
+    "Accept": "*/*",
+    "Host": "httpbin.org",
+    "User-Agent": "curl/8.18.0",
+    "X-Amzn-Trace-Id": "Root=1-69ef7447-4d2de36d76a59cb8339c1a9f"
+  },
+  "origin": "196.70.252.214",
+  "url": "https://httpbin.org/get"
+}
+* Connection #0 to host httpbin.org:443 left intact
+```
+Question : Quelle est la différence entre -i et -v ?
